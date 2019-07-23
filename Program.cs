@@ -21,6 +21,7 @@ namespace SnakeGame
                 char ch = Console.ReadKey(true).KeyChar;
                 gameController.SnakeParts[0].ChangeDirection(ch);
                 gameController.UpdateSnakePositions();
+                gameController.GenerateBombs();
                 if (gameController.GameOver)
                 {
                     Console.Clear();
