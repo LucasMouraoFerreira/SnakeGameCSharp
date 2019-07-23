@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 using SnakeGame.Entities;
 using SnakeGame.Entities.Enum;
+using SnakeGame.View;
+
 
 namespace SnakeGame.Controller
 {
     class GameController
     {
-        public bool GameOver { get; set; }
-        public Map GameMap { get; set; }
-        public List<Snake> SnakeParts { get; set; }
-        public List<Fruit> Fruits { get; set; }
-        public List<Bomb> Bombs { get; set; }
+        public bool GameOver { get; private set; }
+        public Map GameMap { get; private set; }
+        public List<Snake> SnakeParts { get; private set; }
+        public List<Fruit> Fruits { get; private set; }
+        public List<Bomb> Bombs { get; private set; }
         public int Pontos { get; private set; }
+        public int FruitAliveTime { get; private set; }
+        public int BombAliveTime { get; private set; }
+
 
         public GameController(int numberOfRows, int numberOfColumns)
         {
@@ -23,6 +28,8 @@ namespace SnakeGame.Controller
             SnakeParts = new List<Snake>();
             Fruits = new List<Fruit>();
             Bombs = new List<Bomb>();
+            FruitAliveTime = 5;
+            BombAliveTime = 10;
 
             Position posHeadAux = new Position(numberOfRows / 2, numberOfColumns / 2);
             Position posTailAux = new Position(numberOfRows / 2, (numberOfColumns / 2) + 1);
@@ -36,7 +43,51 @@ namespace SnakeGame.Controller
             GameMap.AddUnit(snakeTail);
             
         }
-        
+
+        public void TaskUpdateAndPrint()
+        {
+            var taskUpdateAndPrint = Task.Run(async delegate
+            {
+                while (!GameOver)
+                {
+                    
+                    UpdateSnakePositions();
+                    ConsoleManager.PrintGame(this);
+                    await Task.Delay(200);
+                }
+                Console.Clear();
+                Console.WriteLine("GAME OVER!!");
+                Console.WriteLine("PONTOS: "+ Pontos);
+                Console.WriteLine("Aperte alguma tecla para finalizar a aplicação");
+            });
+        }
+
+        public void TaskAddFruits()
+        {
+            var taskAddFruits = Task.Run(async delegate
+            {
+                while (!GameOver)
+                {
+                    GenerateFruits();
+                    await Task.Delay(FruitAliveTime * 1000);
+                }
+
+            });
+        }
+
+        public void TaskAddBombs()
+        {
+            var taskAddBombs = Task.Run(async delegate
+            {
+                while (!GameOver)
+                {
+                    GenerateBombs();
+                    await Task.Delay(BombAliveTime * 1000);
+                }
+
+            });
+        }
+
         public void GenerateFruits()
         {
             foreach(Fruit fruit in Fruits)
@@ -162,9 +213,14 @@ namespace SnakeGame.Controller
 
             if (snakeHead.HeadDirection == Direction.Left)
             {
-                if (snakeHead.UnitPosition.Column == 0)
+                if (snakeHead.UnitPosition.Column == 0 && !(snakeHead.UnitPosition.Row == 0))
                 {
-                    snakeHead.ChangeDirectionIfHitTheWall();
+                    snakeHead.HeadDirection = Direction.Up;
+                    snakeHead.UnitPosition = new Position(snakeHead.UnitPosition.Row -1, snakeHead.UnitPosition.Column);
+                }
+                else if (snakeHead.UnitPosition.Column == 0 && snakeHead.UnitPosition.Row == 0)
+                {
+                    snakeHead.HeadDirection = Direction.Down;
                     snakeHead.UnitPosition = new Position(snakeHead.UnitPosition.Row + 1, snakeHead.UnitPosition.Column);
                 }
                 else
@@ -215,9 +271,14 @@ namespace SnakeGame.Controller
             }
             else if (snakeHead.HeadDirection == Direction.Right)
             {
-                if (snakeHead.UnitPosition.Column == (GameMap.NumberOfColumns - 1))
+                if (snakeHead.UnitPosition.Column == (GameMap.NumberOfColumns - 1) && snakeHead.UnitPosition.Row != 0)
                 {
-                    snakeHead.ChangeDirectionIfHitTheWall();
+                    snakeHead.HeadDirection = Direction.Up;
+                    snakeHead.UnitPosition = new Position(snakeHead.UnitPosition.Row - 1, snakeHead.UnitPosition.Column);
+                }
+                else if (snakeHead.UnitPosition.Column == (GameMap.NumberOfColumns - 1) && snakeHead.UnitPosition.Row == 0)
+                {
+                    snakeHead.HeadDirection = Direction.Down;
                     snakeHead.UnitPosition = new Position(snakeHead.UnitPosition.Row + 1, snakeHead.UnitPosition.Column);
                 }
                 else
@@ -268,10 +329,15 @@ namespace SnakeGame.Controller
             }
             else if (snakeHead.HeadDirection == Direction.Up)
             {
-                if (snakeHead.UnitPosition.Row == 0)
+                if (snakeHead.UnitPosition.Row == 0 && snakeHead.UnitPosition.Column != 0)
                 {
-                    snakeHead.ChangeDirectionIfHitTheWall();
+                    snakeHead.HeadDirection = Direction.Left;
                     snakeHead.UnitPosition = new Position(snakeHead.UnitPosition.Row, snakeHead.UnitPosition.Column - 1);
+                }
+                else if (snakeHead.UnitPosition.Row == 0 && snakeHead.UnitPosition.Column == 0)
+                {
+                    snakeHead.HeadDirection = Direction.Right;
+                    snakeHead.UnitPosition = new Position(snakeHead.UnitPosition.Row, snakeHead.UnitPosition.Column + 1);
                 }
                 else
                 {
@@ -321,10 +387,15 @@ namespace SnakeGame.Controller
             }
             else if (snakeHead.HeadDirection == Direction.Down)
             {
-                if (snakeHead.UnitPosition.Row == (GameMap.NumberOfRows -1))
+                if (snakeHead.UnitPosition.Row == (GameMap.NumberOfRows -1) && snakeHead.UnitPosition.Column != 0)
                 {
-                    snakeHead.ChangeDirectionIfHitTheWall();
-                    snakeHead.UnitPosition = new Position(snakeHead.UnitPosition.Row, snakeHead.UnitPosition.Column-1);
+                    snakeHead.HeadDirection = Direction.Left;
+                    snakeHead.UnitPosition = new Position(snakeHead.UnitPosition.Row, snakeHead.UnitPosition.Column - 1);
+                }
+                else if(snakeHead.UnitPosition.Row == (GameMap.NumberOfRows - 1) && snakeHead.UnitPosition.Column == 0)
+                {
+                    snakeHead.HeadDirection = Direction.Right;
+                    snakeHead.UnitPosition = new Position(snakeHead.UnitPosition.Row, snakeHead.UnitPosition.Column + 1);
                 }
                 else
                 {

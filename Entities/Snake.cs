@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SnakeGame.Entities.Enum;
+﻿using SnakeGame.Entities.Enum;
 
 namespace SnakeGame.Entities
 {
@@ -20,7 +17,6 @@ namespace SnakeGame.Entities
 
         public void ChangeDirection(char newDirection)
         {
-
             if (newDirection == 'a')
             {
                 HeadDirection = Direction.Left;
@@ -37,29 +33,6 @@ namespace SnakeGame.Entities
             {
                 HeadDirection = Direction.Right;
             }
-
         }
-
-        public void ChangeDirectionIfHitTheWall()
-        {
-
-            if (HeadDirection == Direction.Down)
-            {
-                HeadDirection = Direction.Left;
-            }
-            else if (HeadDirection == Direction.Up)
-            {
-                HeadDirection = Direction.Left;
-            }
-            else if (HeadDirection == Direction.Left)
-            {
-                HeadDirection = Direction.Up;
-            }
-            else if (HeadDirection == Direction.Right)
-            {
-                HeadDirection = Direction.Up;
-            }
-        }
-
     }
 }

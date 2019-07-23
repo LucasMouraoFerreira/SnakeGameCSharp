@@ -25,11 +25,7 @@ namespace SnakeGame.View
                     {
                         ConsoleColor aux = Console.BackgroundColor;
                         Console.BackgroundColor = ConsoleColor.DarkMagenta;
-                        Console.Write(" ");
-                        if (j == gameController.GameMap.NumberOfColumns)
-                        {
-                            Console.Write(" ");
-                        }
+                        Console.Write("  ");
                         Console.BackgroundColor = aux;
                     }
                     else if (j == gameController.GameMap.NumberOfColumns)
@@ -43,20 +39,20 @@ namespace SnakeGame.View
                     {
                         if (gameController.GameMap.MapUnits[i, j] == null)
                         {
-                            Console.Write(" ");
+                            Console.Write("  ");
                         }
                         else if (gameController.GameMap.MapUnits[i, j] is Bomb)
                         {
                             ConsoleColor aux = Console.BackgroundColor;
                             Console.BackgroundColor = ConsoleColor.Blue;
-                            Console.Write(" ");
+                            Console.Write("  ");
                             Console.BackgroundColor = aux;
                         }
                         else if (gameController.GameMap.MapUnits[i, j] is Fruit)
                         {
                             ConsoleColor aux = Console.BackgroundColor;
                             Console.BackgroundColor = ConsoleColor.Red;
-                            Console.Write(" ");
+                            Console.Write("  ");
                             Console.BackgroundColor = aux;
                         }
                         else if (gameController.GameMap.MapUnits[i, j] is Snake)
@@ -65,7 +61,7 @@ namespace SnakeGame.View
                             Console.ForegroundColor = ConsoleColor.Black;
                             ConsoleColor aux = Console.BackgroundColor;
                             Console.BackgroundColor = ConsoleColor.Green;
-                            Console.Write("-");
+                            Console.Write("- ");
                             Console.BackgroundColor = aux;
                             Console.ForegroundColor = auxi;
                         }
@@ -75,10 +71,7 @@ namespace SnakeGame.View
             }
             Console.WriteLine();
             Console.WriteLine("PONTOS: " + gameController.Pontos);
-            Console.WriteLine("Para mover use:   \"w\" ");
-            Console.WriteLine("              \"a\" \"s\" \"d\"");
-            Console.WriteLine("Colete as frutas vermelhas!!");
-            Console.WriteLine("Evite as bombas azuis!!");
+            
         }
     }
 }
