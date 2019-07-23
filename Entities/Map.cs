@@ -17,9 +17,9 @@ namespace SnakeGame.Entities
             MapUnits = new MapUnit[NumberOfRows, NumberOfColumns];
         }
 
-        public void AddUnit(MapUnit mapUnit, Position unitPosition)
+        public void AddUnit(MapUnit mapUnit)
         {
-            MapUnits[unitPosition.Row, unitPosition.Column] = mapUnit;
+            MapUnits[mapUnit.UnitPosition.Row, mapUnit.UnitPosition.Column] = mapUnit;
         }
 
         public void RemoveUnit(Position unitPosition)
