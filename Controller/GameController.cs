@@ -69,7 +69,7 @@ namespace SnakeGame.Controller
                 while (!GameOver)
                 {
                     GenerateFruits();
-                    await Task.Delay(FruitAliveTime * 1000);
+                    await Task.Delay(FruitAliveTime * 1000 + 7);
                 }
 
             });
@@ -82,7 +82,7 @@ namespace SnakeGame.Controller
                 while (!GameOver)
                 {
                     GenerateBombs();
-                    await Task.Delay(BombAliveTime * 1000);
+                    await Task.Delay(BombAliveTime * 1000 + 111);
                 }
 
             });
@@ -92,7 +92,10 @@ namespace SnakeGame.Controller
         {
             foreach(Fruit fruit in Fruits)
             {
-                GameMap.RemoveUnit(fruit.UnitPosition);
+                if (!(GameMap.MapUnits[fruit.UnitPosition.Row, fruit.UnitPosition.Column] is Snake))
+                {
+                    GameMap.RemoveUnit(fruit.UnitPosition);
+                }
             }
             Fruits.Clear();
 
@@ -107,9 +110,9 @@ namespace SnakeGame.Controller
                     Random rdColumn = new Random();
                     int auxRow = rdRow.Next(GameMap.NumberOfRows);
                     int auxColumn = rdColumn.Next(GameMap.NumberOfColumns);
-                    if (GameMap.MapUnits[auxRow, auxColumn] == null && 
+                    if (GameMap.MapUnits[auxRow, auxColumn] == null &&
                         (((auxRow - SnakeParts[0].UnitPosition.Row) < -2) || ((auxRow - SnakeParts[0].UnitPosition.Row) > 2)
-                        ||((auxColumn - SnakeParts[0].UnitPosition.Column) < -2) || ((auxColumn - SnakeParts[0].UnitPosition.Column) > 2)))
+                        || ((auxColumn - SnakeParts[0].UnitPosition.Column) < -2) || ((auxColumn - SnakeParts[0].UnitPosition.Column) > 2)))
                     {
                         GameMap.AddUnit(new Fruit(new Position(auxRow, auxColumn)));
                         Fruits.Add(new Fruit(new Position(auxRow, auxColumn)));
@@ -151,7 +154,10 @@ namespace SnakeGame.Controller
         {
             foreach (Bomb bomb in Bombs)
             {
-                GameMap.RemoveUnit(bomb.UnitPosition);
+                if (!(GameMap.MapUnits[bomb.UnitPosition.Row, bomb.UnitPosition.Column] is Snake))
+                {
+                    GameMap.RemoveUnit(bomb.UnitPosition);
+                }
             }
             Bombs.Clear();
 
